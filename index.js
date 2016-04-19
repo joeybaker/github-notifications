@@ -31,7 +31,9 @@ Notifications.prototype.destroy = function () {
 
 Notifications.prototype.requestOnce = function () {
   var self = this
-  request({url: endpoint, headers: self._headers, json: true}, function (req, res, body) {
+  request({url: endpoint, headers: self._headers, json: true}, function (err, res, body) {
+    if (err) return void this.emit('error', err)
+
     if(res.statusCode === 304 || res.statusCode === 200) {
       self._headers['If-Modified-Since'] = res.headers.date
       self._interval = Number(res.headers['x-poll-interval'])
